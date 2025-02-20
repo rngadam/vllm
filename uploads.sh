@@ -8,8 +8,9 @@ do
         echo "$f"
         ./upload.sh "$f"
         if [ "$?" -eq 0 ]; then
-            echo "upload reports successful, sleeping"
-            sleep 10
+            echo "upload reports successful"
+        else
+            echo "upload failed"
         fi
     fi
 done

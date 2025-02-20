@@ -40,16 +40,28 @@ echo "DESCRIPTION=$DESCRIPTION"
 echo "CAPTION=$CAPTION"
 
 echo "$FILENAME"
-peertube-cli upload \
-    --verbose 4 \
-    --file "$FILENAME" \
-    --video-name "$CAPTION" \
-    --url https://peertube.coderbunker.ca \
-    --thumbnail "$THUMBNAIL" \
-    --video-description "$BASENAME: $DESCRIPTION" \
-    --language "$LANGUAGE" \
-    --privacy 2 \
-    --channel-name ricky \
-    --no-wait-transcoding | tee $OUTPUT
 
-exit 0
+while : ; do
+    peertube-cli upload \
+        --verbose 4 \
+        --file "$FILENAME" \
+        --video-name "$CAPTION" \
+        --url https://peertube.coderbunker.ca \
+        --thumbnail "$THUMBNAIL" \
+        --video-description "$BASENAME: $DESCRIPTION" \
+        --language "$LANGUAGE" \
+        --privacy 2 \
+        --channel-name ricky \
+        --no-wait-transcoding 2>&1 | tee $OUTPUT
+    PEERTUBE_CLI_EXITCODE="$?"
+
+    IS_THROTTLED=`grep "Too many requests, please try again later." $OUTPUT`
+    if [ -n "$IS_THROTTLED" ]; then
+        echo "Too many requests, please try again later, sleeping 10 seconds and trying again"
+        sleep 10
+    else
+        break
+    fi
+done
+
+exit $PEERTUBE_CLI_EXITCODE
