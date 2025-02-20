@@ -12,7 +12,7 @@ Set of scripts to generate thumbnails, captions and transcribe audio of videos
 
 There's a set of scripts that generate output files until ultimately it gets uploads in batch.
 
-```
+```bash
 MEDIADIR=/media/Videos
 # generate a thumbnail for each file with video content in the directory that does not already have a thumbnail
 # (videos are autodetected, other filetypes rejected)
@@ -26,5 +26,6 @@ python vit-gpt2-image-captioning.py $MEDIADIR/*thumbnail.jpg
 ./whisper_transcribe.py $MEDIADIR/*
 
 # upload all videos
+# (videos must have thumbnail, transcription, caption)
 ./uploads.sh $MEDIADIR/*
 ```
