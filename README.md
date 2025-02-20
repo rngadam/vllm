@@ -1,6 +1,11 @@
 # What it is
 
-We use [vit-gpt2-image-captioning](https://huggingface.co/nlpconnect/vit-gpt2-image-captioning)
+Set of scripts to generate thumbnails, captions and transcribe audio of videos
+
+## Implementation
+
+* [vit-gpt2-image-captioning](https://huggingface.co/nlpconnect/vit-gpt2-image-captioning) to generate captions from a single I-frame thumbnail.
+* [whisper](https://github.com/openai/whisper) for audio transcription
 
 ## Usage
 

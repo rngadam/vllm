@@ -14,8 +14,6 @@ tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-
-
 max_length = 16
 num_beams = 4
 gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
@@ -45,8 +43,9 @@ if len(inputs) == 0:
 
 batch_size = 50
 for i in range(0, len(inputs), batch_size):
-  output = predict_step(inputs[i:i+batch_size])
-  for filename, prediction in zip(inputs, output):
+  inputs_slice = inputs[i:i+batch_size]
+  output = predict_step(inputs_slice)
+  for filename, prediction in zip(inputs_slice, output):
       output_filename = filename + '.caption.txt'
       print(f"{filename}: {prediction}")
       with open(output_filename, 'w+') as f:
