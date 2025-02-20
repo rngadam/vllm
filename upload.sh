@@ -16,8 +16,13 @@ function check_file_exists() {
 }
 
 if [ -f "$OUTPUT" ]; then
-    echo "$OUTPUT exists, this has already been processed, exiting"
-    exit
+    if [ -s "$OUTPUT" ]; then
+        echo "$OUTPUT exists, this has already been processed, exiting"
+        exit 1
+    else
+        echo "$OUTPUT empty, removing"
+        rm "$OUTPUT"
+    fi
 fi
 check_file_exists $FILENAME
 check_file_exists $THUMBNAIL_FILENAME
@@ -45,4 +50,6 @@ peertube-cli upload \
     --language "$LANGUAGE" \
     --privacy 2 \
     --channel-name ricky \
-    --no-wait-transcoding > $OUTPUT
+    --no-wait-transcoding | tee $OUTPUT
+
+exit 0

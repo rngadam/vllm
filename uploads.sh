@@ -7,6 +7,10 @@ do
     if [[ $mimetype == video* ]]; then
         echo "$f"
         ./upload.sh "$f"
+        if [ "$?" -eq 0 ]; then
+            echo "upload reports successful, sleeping"
+            sleep 10
+        fi
     fi
 done
 IFS="$OIFS"
