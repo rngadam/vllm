@@ -54,4 +54,11 @@ if __name__ == "__main__":
     response = process(image_paths)
     with open(output_json_path, "w") as output_file:
         output_file.write(response)
-        #json.dump(response, output_file, indent=4)
+
+    # Write the response text to a .text.json file, filtering out markdown
+    response_data = json.loads(response)
+    filtered_text = response_data.get("response", "").replace("```json", "").replace("```", "").strip()
+    text_data = json.loads(filtered_text)
+    text_json_path = output_json_path.replace(".json", ".response.json")
+    with open(text_json_path, "w") as text_file:
+        json.dump(text_data, text_file, indent=4)
