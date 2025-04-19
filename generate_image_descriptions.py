@@ -16,13 +16,11 @@ def encode_images_to_base64(image_paths):
 
 def create_payload(images_base64):
     """Create the JSON payload for the API request."""
+    with open("generate_image_descriptions.md", "r", encoding="utf-8") as file:
+        prompt = file.read()
     return {
         "model": "gemma3:27b-it-q8_0",
-        "prompt": """
-Décrire cette séquence d'images tiré d'un seul vidéo en détails avec descriptifs des personnes, des objets, des textes
-et des actions. Répondre en français et ne pas faire de résumé.
-Décrire chaque image séparément et donner un titre à chaque image.
-""",
+        "prompt": prompt,
         "stream": False,
         "images": images_base64
     }
@@ -55,4 +53,5 @@ if __name__ == "__main__":
     print(image_paths)
     response = process(image_paths)
     with open(output_json_path, "w") as output_file:
-        json.dump(response, output_file, indent=4)
+        output_file.write(response)
+        #json.dump(response, output_file, indent=4)
