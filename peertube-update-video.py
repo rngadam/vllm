@@ -22,6 +22,25 @@ def load_token():
             return json.load(token_file)
     return None
 
+def get_video_last_updated(uuid):
+    """Fetch the last updated timestamp of a video from PeerTube."""
+    token_data = load_token()
+    if not token_data:
+        print("Error: No token found. Please authenticate first.")
+        return None
+
+    headers = {
+        "Authorization": f"Bearer {token_data['access_token']}"
+    }
+
+    response = requests.get(f"{PEERTUBE_BASE_URL}/api/v1/videos/{uuid}", headers=headers)
+    if response.status_code == 200:
+        video_data = response.json()
+        return video_data.get("updatedAt")  # ISO 8601 timestamp
+    else:
+        print(f"Error fetching video metadata for UUID {uuid}: {response.status_code} {response.text}")
+        return None
+
 def update_video_metadata(uuid, name, description, tags):
     """Update the metadata of a specific video on PeerTube."""
     token_data = load_token()
@@ -34,10 +53,12 @@ def update_video_metadata(uuid, name, description, tags):
         "Content-Type": "application/json"
     }
 
+    # Limit to tags with max 30 characters and take the first 5
+    tags = [tag for tag in tags if len(tag) <= 30][:5]
     data = {
         "name": name,
         "description": description,
-        "tags": tags[0:5]  # Limit to the first 5 tags
+        "tags": tags
     }
 
     response = requests.put(f"{PEERTUBE_BASE_URL}/api/v1/videos/{uuid}", headers=headers, json=data)
@@ -63,6 +84,21 @@ def process_csv_and_update_metadata(csv_file, base_dir):
             if not os.path.exists(json_path):
                 print(f"JSON file not found for {filename}: {json_path}")
                 continue
+
+            # Get the last modified timestamp of the JSON file
+            json_last_modified = os.path.getmtime(json_path)
+
+            # Fetch the last updated timestamp of the video from PeerTube
+            video_last_updated = get_video_last_updated(uuid)
+            if video_last_updated:
+                # Convert ISO 8601 timestamp to epoch time
+                from datetime import datetime
+                video_last_updated_epoch = datetime.fromisoformat(video_last_updated.replace("Z", "+00:00")).timestamp()
+
+                # Compare timestamps
+                if video_last_updated_epoch > json_last_modified:
+                    print(f"Skipping update for video UUID {uuid}: PeerTube video is newer.")
+                    continue
 
             # Load the JSON file
             try:
