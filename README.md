@@ -1,6 +1,10 @@
 # Qu'est-ce que c'est ?
-
-Ensemble de scripts pour générer des keyframes, filtrer les images, décrire les images, extraire et transcrire l'audio, organiser et uploader les vidéos.
+- Génération de keyframes à partir des vidéos
+- Filtrage des images extraites pour supprimer les redondances
+- Description automatique des images extraites
+- Extraction et transcription de l'audio des vidéos
+- Organisation des vidéos par similarité de contenu
+- Upload des vidéos et de leurs métadonnées
 
 ## Implémentation
 
@@ -23,7 +27,7 @@ MEDIADIR=/media/Videos
 ./filter-redundant-keyframes.sh $MEDIADIR/*
 
 # Génération de descriptions d'images à partir des keyframes filtrées
-./generate_image_descriptions.sh $MEDIADIR/*keyframe*.jpg
+./generate_image_descriptions.sh $MEDIADIR/*
 
 # Extraction de l'audio de chaque vidéo
 ./extract_audio.sh $MEDIADIR/*
@@ -52,11 +56,11 @@ python cluster_videos_by_keywords.py $MEDIADIR/*
 
 ```mermaid
 flowchart TD
-    A[Vidéo source] --> B[Extraction keyframes\nextract_keyframes.sh]
-    B --> C[Filtrage keyframes\nfilter-redundant-keyframes.sh]
-    C --> D[Générer descriptions d'images\ngenerate_image_descriptions.sh]
-    A --> E[Extraction audio\nextract_audio.sh]
-    E --> F[Transcrire audio\ntranscribe_audios.sh]
-    D & F --> G[Clustering vidéos\ncluster_videos_by_keywords.py]
-    G --> H[Upload\nuploads.sh]
+    A[Vidéo source] --> B[Extraction keyframes<br>extract_keyframes.sh]
+    B --> C[Filtrage keyframes<br>filter-redundant-keyframes.sh]
+    C --> D[Générer descriptions d'images<br>generate_image_descriptions.sh]
+    A --> E[Extraction audio<br>extract_audio.sh]
+    E --> F[Transcrire audio<br>transcribe_audios.sh]
+    D & F --> G[Clustering vidéos<br>cluster_videos_by_keywords.py]
+    G --> H[Upload<br>uploads.sh]
 ```
