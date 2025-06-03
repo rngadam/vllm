@@ -20,6 +20,9 @@ Un ensemble de scripts génère les fichiers de sortie, qui sont ensuite organis
 
 ```bash
 MEDIADIR=/media/Videos
+# Upload initial des vidéos
+./uploads.sh $MEDIADIR/*
+
 # Extraction des keyframes de chaque vidéo
 ./extract_keyframes.sh $MEDIADIR/*
 
@@ -29,17 +32,26 @@ MEDIADIR=/media/Videos
 # Génération de descriptions d'images à partir des keyframes filtrées
 ./generate_image_descriptions.sh $MEDIADIR/*
 
+# Mise à jour des captions sur Peertube
+./peertube-update-caption.py $MEDIADIR/*
+
 # Extraction de l'audio de chaque vidéo
 ./extract_audio.sh $MEDIADIR/*
 
 # Transcription de l'audio des vidéos
 ./transcribe_audios.sh $MEDIADIR/*
 
+# Génération de sous-titres WebVTT à partir des transcriptions
+./json_to_webvtt.sh $MEDIADIR/*
+
+# Mise à jour des sous-titres sur Peertube
+./peertube-update-caption.py $MEDIADIR/*
+
 # Clustering des vidéos selon les descriptions ou transcriptions
 python cluster_videos_by_keywords.py $MEDIADIR/*
 
-# Upload des vidéos et métadonnées
-./uploads.sh $MEDIADIR/*
+# Mise à jour des métadonnées vidéo sur Peertube
+./peertube-update-video.py $MEDIADIR/*
 ```
 
 ## Liste des scripts principaux
@@ -49,18 +61,34 @@ python cluster_videos_by_keywords.py $MEDIADIR/*
 - `generate_image_descriptions.sh` / `generate_image_descriptions.py` / `generate_image_descriptions.md` : Génère une description textuelle pour chaque image extraite.
 - `extract_audio.sh` : Extrait l'audio de chaque vidéo.
 - `transcribe_audios.sh` : Transcrit l'audio de chaque vidéo en texte (utilise les fichiers audio extraits).
+- `json_to_webvtt.sh` / `json_to_webvtt.py` : Convertit les transcriptions JSON en fichiers de sous-titres WebVTT.
+- `uploads.sh` / `upload.sh` : Upload les vidéos et leurs métadonnées dès le début du pipeline.
+- `peertube-update-caption.py` : Met à jour les légendes/captions sur Peertube à chaque étape.
+- `peertube-update-video.py` : Met à jour les métadonnées (description, titre, etc.) sur Peertube à chaque étape.
 - `cluster_videos_by_keywords.py` : Regroupe les vidéos par similarité de mots-clés ou de contenu.
-- `uploads.sh` / `upload.sh` : Upload les vidéos et leurs métadonnées.
 
 ## Diagramme du flux
 
 ```mermaid
 flowchart TD
-    A[Vidéo source] --> B[Extraction keyframes<br>extract_keyframes.sh]
-    B --> C[Filtrage keyframes<br>filter-redundant-keyframes.sh]
-    C --> D[Générer descriptions d'images<br>generate_image_descriptions.sh]
-    A --> E[Extraction audio<br>extract_audio.sh]
-    E --> F[Transcrire audio<br>transcribe_audios.sh]
-    D & F --> G[Clustering vidéos<br>cluster_videos_by_keywords.py]
-    G --> H[Upload<br>uploads.sh]
+    A[Vidéo source<br>```/media/Videos```] --> B[Upload initial<br>uploads.sh]
+    B --> C[Extraction keyframes<br>extract_keyframes.sh]
+    C --> D[Filtrage keyframes<br>filter-redundant-keyframes.sh]
+    D --> E[Générer descriptions d'images<br>generate_image_descriptions.sh]
+    E --> F[MAJ captions Peertube<br>peertube-update-caption.py]
+    A --> G[Extraction audio<br>extract_audio.sh]
+    G --> H[Transcrire audio<br>transcribe_audios.sh]
+    H --> I[Générer sous-titres WebVTT<br>json_to_webvtt.sh]
+    I --> J[MAJ sous-titres Peertube<br>peertube-update-caption.py]
+    E & I --> K[MAJ métadonnées vidéo<br>peertube-update-video.py]
+    K --> L[Clustering vidéos<br>cluster_videos_by_keywords.py]
 ```
+
+## à faire
+
+* réintégrer le développement itératif (mise à jour) en un seul script
+* explorer l'intégration des fonctionnalités directement dans Peertube (gestion des jobs batch)
+* MAJ à Peertube 7
+  * https://github.com/Chocobozzz/PeerTube
+    * [package](https://search.nixos.org/packages?channel=25.05&show=peertube&from=0&size=50&sort=relevance&type=packages&query=peertube) NixOS:
+* s'assurer de garder l'identifiant au téléversement des vidéos
