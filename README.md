@@ -71,7 +71,7 @@ python cluster_videos_by_keywords.py $MEDIADIR/*
 
 ```mermaid
 flowchart TD
-    A[Vidéo source<br>```/media/Videos```] --> B[Upload initial<br>uploads.sh]
+    A[Vidéo source<br>/media/Videos] --> B[Upload initial<br>uploads.sh]
     B --> C[Extraction keyframes<br>extract_keyframes.sh]
     C --> D[Filtrage keyframes<br>filter-redundant-keyframes.sh]
     D --> E[Générer descriptions d'images<br>generate_image_descriptions.sh]
