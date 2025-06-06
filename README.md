@@ -6,6 +6,12 @@
 - Organisation des vidéos par similarité de contenu
 - Upload des vidéos et de leurs métadonnées
 
+## Présentations
+
+* [Construire une pipeline de traitement vidéos](https://gist-reveal.it/e1342c5bf64b999999054e51c3bb7c9c#/)
+* [utilisation de modèles d'intelligence artificielle en local](https://gist-reveal.it/180c31d5c649a46f66294cab32e9fbdb#/)
+* [Découvrez l'auto-hébergement de votre contenu vidéo](https://rngadam.github.io/slideshows/d5aa8079b2ef234c2d2e09806907553dc7d000c227e28f394019a4dff4495194/index.html)
+
 ## Implémentation
 
 * ffmpeg : extraction de keyframes
@@ -92,9 +98,3 @@ flowchart TD
   * https://github.com/Chocobozzz/PeerTube
     * [package](https://search.nixos.org/packages?channel=25.05&show=peertube&from=0&size=50&sort=relevance&type=packages&query=peertube) NixOS:
 * s'assurer de garder l'identifiant au téléversement des vidéos
-
-## Présentations
-
-* [Construire une pipeline de traitement vidéos](https://gist-reveal.it/e1342c5bf64b999999054e51c3bb7c9c#/)
-* [utilisation de modèles d'intelligence artificielle en local](https://gist-reveal.it/180c31d5c649a46f66294cab32e9fbdb#/)
-* [Découvrez l'auto-hébergement de vogtre contenu vidéo](https://rngadam.github.io/slideshows/d5aa8079b2ef234c2d2e09806907553dc7d000c227e28f394019a4dff4495194/index.html)
